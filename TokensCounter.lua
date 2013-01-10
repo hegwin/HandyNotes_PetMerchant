@@ -1,5 +1,8 @@
-function TokensCounter_OnLoad()
-  SlashCmdList["TokensCounter"] = TokensCounter_SlashCommand;
-  SLASH_TokensCounter1= "/htc";
-  this:RegisterEvent("VARIABLES_LOADED")
+SLASH_TOKENSCOUNTER1 = "/htc"
+SlashCmdList["TOKENSCOUNTER"] = function(self, txt)
+  if UnitExists("target") then
+    SendChatMessage("Hello "..UnitName("target"), "SAY")
+  else
+    SendChatMessage("Hello, World of Warcraft")
+  end
 end

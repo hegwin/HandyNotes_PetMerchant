@@ -3,4 +3,4 @@
 ## Title: TokensCounter
 ## Notes: Calculate how many tokens you are still in need
 
-TokensCounter.xml
+TokensCounter.lua
