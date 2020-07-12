@@ -1,0 +1,8 @@
+## Interface: 80300
+## Title: HandyNotes: Pet Merchant
+## Author: Hegwin Xiao Wang
+## Notes: Show pet merchants on the World Map
+
+## RequiredDeps: HandyNotes
+
+main.lua

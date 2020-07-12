@@ -1,8 +1,0 @@
-<Script file="TokensCounter.lua"/> 
-<Frame name="TokensCounter"> 
-    <Scripts> 
-	<OnLoad> 
-	    TokensCounter_OnLoad();
-	</OnLoad>
-    </Scripts>
-</Frame>
