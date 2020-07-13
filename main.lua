@@ -1,4 +1,14 @@
+local _, PetMerchant = ...
+PetMerchant.points = {}
+
 local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes")
+
+local GameTooltip = GameTooltip
+local LibStub = LibStub
+local next = next
+local UIParent = UIParent
+
+local points = PetMerchant.points
 
 local data = {
   --[[ structure:
@@ -34,3 +44,36 @@ local data = {
     }
   }
 }
+
+-- plugin handler for HandyNotes
+function PetMerchant:OnEnter(mapFile, coord)
+  HandyNotes:Print("PetMerchant:OnEnter")
+	if self:GetCenter() > UIParent:GetCenter() then -- compare X coordinate
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+	else
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	end
+
+	local point = points[mapFile] and points[mapFile][coord]
+	local text
+
+  text = "This is a pet vendor"
+
+	GameTooltip:SetText(text)
+
+	GameTooltip:AddLine(" ")
+
+	GameTooltip:Show()
+end
+
+function PetMerchant:OnLeave()
+  HandyNotes:Print("PetMerchant:OnLeave")
+	GameTooltip:Hide()
+end
+
+function PetMerchant:OnEnable()
+  HandyNotes:Print("PetMerchant Initialized!")
+end
+
+-- activate
+LibStub("AceAddon-3.0"):NewAddon(PetMerchant, "HandyNotes_PetMerchant", "AceEvent-3.0")
