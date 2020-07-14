@@ -41,6 +41,10 @@ local data = {
           price = { unitID = 163036, cost = 200 }, -- https://wow.gamepedia.com/API_GetItemIcon
           -- ICON interface/icons/inv_currency_petbattle.blp
           -- https://wow.tools/files/#search=2004597&page=1&sort=0&desc=asc
+        },
+        {
+          item = 163555,
+          species = 2429
         }
       }
     }
@@ -87,6 +91,15 @@ function PetItem:new(itemID)
   return pet
 end
 
+function getNPCNameByID(npcID)
+  local NPC_TOOLTIP = CreateFrame("GameTooltip", 'PetMerchantName', UIParent, "GameTooltipTemplate")
+  NPC_TOOLTIP:SetOwner(UIParent, "ANCHOR_NONE")
+  NPC_TOOLTIP:SetHyperlink(("unit:Creature-0-0-0-0-%d"):format(npcID))
+  local name = _G['PetMerchantNameTextLeft1']:GetText()
+  
+  return name
+end
+
 -- plugin handler for HandyNotes
 function PetMerchant:OnEnter(mapFile, coord)
   HandyNotes:Print("PetMerchant:OnEnter")
@@ -99,10 +112,10 @@ function PetMerchant:OnEnter(mapFile, coord)
   local info = points[mapFile] and points[mapFile][coord]
   local merchant = info.npc
   local pets = info.pets
-  local text
   
-  text = "This is a pet vendor"
-  GameTooltip:SetText(text)
+  local merchantName = getNPCNameByID(merchant)
+  
+  GameTooltip:SetText(merchantName)
   
   for _, pet in ipairs(pets) do
     local speciesID = pet.species
@@ -114,6 +127,7 @@ function PetMerchant:OnEnter(mapFile, coord)
     -- https://wow.gamepedia.com/ItemMixin#ItemMixin:ContinueOnItemLoad
     local petItem = PetItem:new(pet.item)
     
+    -- https://wow.gamepedia.com/API_GameTooltip_AddDoubleLine
     GameTooltip:AddDoubleLine(petItem.itemLink, ownedString)
     GameTooltip:AddTexture(petItem.itemIcon, {margin={right=2}})
   end
