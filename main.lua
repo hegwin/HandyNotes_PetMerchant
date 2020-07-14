@@ -10,26 +10,28 @@ local UIParent = UIParent
 
 local points = PetMerchant.points
 
+local ContinentMapIDs = { 12 }
+
 local data = {
   --[[ structure:
   [uiMapID] = {
-    [coord] = {
-      npc=[id], -- related npc id, used to display names in tooltip
-      pets = {
-        label=[string], -- label: text that'll be the label, optional
-        item=[id], -- itemID
-        species=[id], -- speciesID
-        quest=[id], -- will be checked, for whether character already has it
-        currency=[id], -- currencyid
-        achievement=[id], -- will be shown in the tooltip
-        note=[string], -- some text which might be helpful
-      }
-    },
+  [coord] = {
+  npc=[id], -- related npc id, used to display names in tooltip
+  pets = {
+  label=[string], -- label: text that'll be the label, optional
+  item=[id], -- itemID
+  species=[id], -- speciesID
+  quest=[id], -- will be checked, for whether character already has it
+  currency=[id], -- currencyid
+  achievement=[id], -- will be shown in the tooltip
+  note=[string], -- some text which might be helpful
+  }
+  },
   },
   --]]
 
   -- Silithus
-  [1377] = {
+  [81] = {
     [42204420] = {
       npc = 130216, -- Magni Bronzebeard <The Speaker>
       pets = {
@@ -45,34 +47,94 @@ local data = {
   }
 }
 
+local defaults = { profile = { icon_scale = 1.4, icon_alpha = 0.8 } }
+local options = {}
+local db
+
+do
+  -- custom iterator we use to iterate over every node in a given zone
+  local function iterator(t, prev)
+    if not t then return end
+
+    local coord, value = next(t, prev)
+    while coord do
+      local icon = "interface\\icons\\inv_currency_petbattle.blp"
+
+      if value then
+        return coord, nil, icon, 1.4, 0.8
+      end
+
+      coord, value = next(t, coord)
+    end
+  end
+
+  function PetMerchant:GetNodes2(mapID, minimap)
+    return iterator, points[mapID]
+  end
+end
+
 -- plugin handler for HandyNotes
 function PetMerchant:OnEnter(mapFile, coord)
   HandyNotes:Print("PetMerchant:OnEnter")
-	if self:GetCenter() > UIParent:GetCenter() then -- compare X coordinate
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	else
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	end
+  if self:GetCenter() > UIParent:GetCenter() then -- compare X coordinate
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+  else
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+  end
 
-	local point = points[mapFile] and points[mapFile][coord]
-	local text
+  local point = points[mapFile] and points[mapFile][coord]
+  local text
 
   text = "This is a pet vendor"
 
-	GameTooltip:SetText(text)
+  GameTooltip:SetText(text)
 
-	GameTooltip:AddLine(" ")
+  GameTooltip:AddLine(" ")
 
-	GameTooltip:Show()
+  GameTooltip:Show()
 end
 
 function PetMerchant:OnLeave()
   HandyNotes:Print("PetMerchant:OnLeave")
-	GameTooltip:Hide()
+  GameTooltip:Hide()
 end
 
 function PetMerchant:OnEnable()
-  HandyNotes:Print("PetMerchant Initialized!")
+  HandyNotes:Print("PetMerchant:OnEnable")
+
+  local HereBeDragons = LibStub("HereBeDragons-2.0", true)
+  if not HereBeDragons then
+    HandyNotes:Print("Your installed copy of HandyNotes is out of date and the Summer Festival plug-in will not work correctly. Please update HandyNotes to version 1.5.0 or newer.")
+    return
+  end
+
+  --  Copy data for continent maps and normal maps
+  for _, continentMapID in ipairs(ContinentMapIDs) do
+    local maps = C_Map.GetMapChildrenInfo(continentMapID)
+
+    for _, map in ipairs(maps) do
+      local coords = data[map.mapID]
+      if coords then
+        for coord, info in pairs(coords) do
+          local mapID = map.mapID
+          points[mapID] = points[mapID] or {}
+          points[mapID][coord] = info
+
+          local mx, my = HandyNotes:getXY(coord)
+          local cx, cy = HereBeDragons:TranslateZoneCoordinates(mx, my, mapID, continentMapID)
+          print(mx, my, cx, cy)
+          if cx and cy then
+            points[continentMapID] = points[continentMapID] or {}
+            points[continentMapID][HandyNotes:getCoord(cx, cy)] = info
+          end
+        end
+      end
+    end
+  end
+  -- Copy data end
+
+  HandyNotes:RegisterPluginDB("PetMerchant", self, options)
+  db = LibStub("AceDB-3.0"):New("HandyNotes_PetMerchantDB", defaults, "Default").profile
 end
 
 -- activate
