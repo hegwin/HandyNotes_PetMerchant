@@ -73,6 +73,20 @@ do
   end
 end
 
+local PetItem = {}
+
+function PetItem:new(itemID)
+  local pet = { itemLink = 'retrieving', itemIcon = 'Interface\\Icons\\Inv_misc_questionmark' }
+  local petItem = Item:CreateFromItemID(itemID)
+  
+  petItem:ContinueOnItemLoad(function()
+    pet.itemLink = petItem:GetItemLink()
+    pet.itemIcon = petItem:GetItemIcon()
+  end)
+  
+  return pet
+end
+
 -- plugin handler for HandyNotes
 function PetMerchant:OnEnter(mapFile, coord)
   HandyNotes:Print("PetMerchant:OnEnter")
@@ -82,14 +96,27 @@ function PetMerchant:OnEnter(mapFile, coord)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   end
 
-  local point = points[mapFile] and points[mapFile][coord]
+  local info = points[mapFile] and points[mapFile][coord]
+  local merchant = info.npc
+  local pets = info.pets
   local text
-
+  
   text = "This is a pet vendor"
-
   GameTooltip:SetText(text)
+  
+  for _, pet in ipairs(pets) do
+    local speciesID = pet.species
+    -- https://wow.gamepedia.com/API_C_PetJournal.GetPetInfoBySpeciesID
+    local speciesName = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+    -- https://wow.gamepedia.com/API_C_PetJournal.GetOwnedBattlePetString
+    local ownedString = C_PetJournal.GetOwnedBattlePetString(speciesID)
 
-  GameTooltip:AddLine(" ")
+    -- https://wow.gamepedia.com/ItemMixin#ItemMixin:ContinueOnItemLoad
+    local petItem = PetItem:new(pet.item)
+    
+    GameTooltip:AddDoubleLine(petItem.itemLink, ownedString)
+    GameTooltip:AddTexture(petItem.itemIcon, {margin={right=2}})
+  end
 
   GameTooltip:Show()
 end
