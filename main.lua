@@ -10,7 +10,14 @@ local UIParent = UIParent
 
 local points = PetMerchant.points
 
-local ContinentMapIDs = { 12 }
+local ContinentMapIDs = { 12, 862, 875 }
+
+-- Get currency/item icons from
+-- https://wow.tools/files/#search=2004597&page=1&sort=0&desc=asc
+local ExchangableIcons = {
+  ['currency:1716'] = 'interface\\icons\\ui_horde_honorboundmedal.blp',
+  ['item:163036'] = 'interface\\icons\\inv_currency_petbattle.blp'
+}
 
 local data = {
   --[[ structure:
@@ -30,22 +37,43 @@ local data = {
   },
   --]]
 
-  -- Silithus
-  [81] = {
+  [81] = { -- Silithus
     [42204420] = {
       npc = 130216, -- Magni Bronzebeard <The Speaker>
       pets = {
         {
           item = 163515,
           species = 2439, -- https://wow.gamepedia.com/API_C_PetJournal.GetPetStats
-          price = { unitID = 163036, cost = 200 }, -- https://wow.gamepedia.com/API_GetItemIcon
-          -- ICON interface/icons/inv_currency_petbattle.blp
-          -- https://wow.tools/files/#search=2004597&page=1&sort=0&desc=asc
+          exchangable = 'item:163036',
+          cost = 200 -- https://wow.gamepedia.com/API_GetItemIcon          
         },
         {
           item = 163555,
-          species = 2429
+          species = 2429,
+          exchangable = 'item:163036',
+          cost = 100
         }
+      }
+    }
+  },
+  [1165] = { -- Dazar'alor
+    [44609440] = {
+      npc = 148923, -- Captain Zen'taga <Dubloons Trader>
+      pets = {
+        { item = 166500, species = 2562 },
+        { item = 166491, species = 2555 }
+      }
+    },
+    [48608700] = {
+      npc = 125879,
+      pets = {
+        { item = 163568, species = 2430 }
+      }
+    },
+    [51209520] = {
+      npc = 148924,
+      pets = {
+        { item = 166347, species = 2540, exchangable = 'currency:1716', cost = 100 }
       }
     }
   }
@@ -112,11 +140,11 @@ function PetMerchant:OnEnter(mapFile, coord)
   local info = points[mapFile] and points[mapFile][coord]
   local merchant = info.npc
   local pets = info.pets
-  
+
   local merchantName = getNPCNameByID(merchant)
-  
+
   GameTooltip:SetText(merchantName)
-  
+
   for _, pet in ipairs(pets) do
     local speciesID = pet.species
     -- https://wow.gamepedia.com/API_C_PetJournal.GetPetInfoBySpeciesID
@@ -126,10 +154,16 @@ function PetMerchant:OnEnter(mapFile, coord)
 
     -- https://wow.gamepedia.com/ItemMixin#ItemMixin:ContinueOnItemLoad
     local petItem = PetItem:new(pet.item)
-    
+
     -- https://wow.gamepedia.com/API_GameTooltip_AddDoubleLine
     GameTooltip:AddDoubleLine(petItem.itemLink, ownedString)
     GameTooltip:AddTexture(petItem.itemIcon, {margin={right=2}})
+
+    local exchangable = pet.exchangable
+    if exchangable then
+      GameTooltip:AddLine(pet.cost)
+      GameTooltip:AddTexture(ExchangableIcons[exchangable], {margin={right=4}})
+    end
   end
 
   GameTooltip:Show()
