@@ -2,7 +2,6 @@ local _, PetMerchant = ...
 PetMerchant.points = {}
 
 local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes")
-
 local GameTooltip = GameTooltip
 local LibStub = LibStub
 local next = next
@@ -10,6 +9,8 @@ local UIParent = UIParent
 
 local points = PetMerchant.points
 
+-- local PetMerchantIcon = 'interface\\icons\\inv_misc_firekitty.blp'
+local PetMerchantIcon = 'interface\\icons\\inv_corgi2.blp'
 local ContinentMapIDs = { 12, 862, 875 }
 
 -- Get currency/item icons from
@@ -22,18 +23,16 @@ local ExchangableIcons = {
 local data = {
   --[[ structure:
   [uiMapID] = {
-  [coord] = {
-  npc=[id], -- related npc id, used to display names in tooltip
-  pets = {
-  label=[string], -- label: text that'll be the label, optional
-  item=[id], -- itemID
-  species=[id], -- speciesID
-  quest=[id], -- will be checked, for whether character already has it
-  currency=[id], -- currencyid
-  achievement=[id], -- will be shown in the tooltip
-  note=[string], -- some text which might be helpful
-  }
-  },
+    [coord] = {
+      npc=[id], -- related npc id, used to display names in tooltip
+      pets = {
+        label=[string], -- label: text that'll be the label, optional
+        item=[id], -- itemID
+        species=[id], -- speciesID
+        exchangable=[typeString:id], -- currency or item with id
+        note=[string], -- some text which might be helpful
+      }
+    },
   },
   --]]
 
@@ -90,10 +89,10 @@ do
 
     local coord, value = next(t, prev)
     while coord do
-      local icon = "interface\\icons\\inv_currency_petbattle.blp"
+      -- local icon = "interface\\icons\\inv_currency_petbattle.blp"
 
       if value then
-        return coord, nil, icon, 1.4, 0.8
+        return coord, nil, PetMerchantIcon, 1.2, 0.8
       end
 
       coord, value = next(t, coord)
@@ -162,7 +161,7 @@ function PetMerchant:OnEnter(mapFile, coord)
     local exchangable = pet.exchangable
     if exchangable then
       GameTooltip:AddLine(pet.cost)
-      GameTooltip:AddTexture(ExchangableIcons[exchangable], {margin={right=4}})
+      GameTooltip:AddTexture(ExchangableIcons[exchangable], {margin={left=16, right=4}})
     end
   end
 
