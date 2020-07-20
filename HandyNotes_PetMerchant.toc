@@ -5,4 +5,5 @@
 
 ## RequiredDeps: HandyNotes
 
+data.lua
 main.lua
