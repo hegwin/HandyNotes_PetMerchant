@@ -12,13 +12,45 @@ local points = PetMerchant.points
 
 -- local PetMerchantIcon = 'interface\\icons\\inv_misc_firekitty.blp'
 local PetMerchantIcon = 'interface\\icons\\inv_corgi2.blp'
-local ContinentMapIDs = { 12, 862, 875 }
+local ContinentMapIDs = {
+  12,  -- Kalimdor
+  13,  -- Eastern Kingdoms
+  101, -- Outland
+  113, -- Northrend
+  424, -- Pandaria
+  572, -- Draenor
+  619, -- Broken Isles
+  862,
+  875, -- Zandalar
+  876  -- Kul Tiras
+}
+
 
 -- Get currency/item icons from
 -- https://wow.tools/files/#search=2004597&page=1&sort=0&desc=asc
 local ExchangableIcons = {
-  ['currency:1716'] = 'interface\\icons\\ui_horde_honorboundmedal.blp',
-  ['item:163036'] = 'interface\\icons\\inv_currency_petbattle.blp'
+  ['currency:823'] = 'interface\\icons\\inv_apexis_draenor.blp', -- Apexis Crystal
+  ['item:124099'] = 'interface\\icons\\inv_misc_blacksaberonfang.blp', -- Blackfang Claw
+  ['currency:789'] = 'interface\\icons\\timelesscoin-bloody.blp', -- Bloody Coin
+  ['item:101529'] = 'interface\\icons\\inv_misc_trinketpanda_07.blp', -- Celestial Coin
+  ['currency:241'] = 'interface\\icons\\ability_paladin_artofwar.blp', -- Champion's Seal
+  ['item:169665'] = 'interface\\icons\\inv_misc_bone_humanskull_01.blp', -- Cleansed Remains
+  ['item:124669'] = 'interface\\icons\\inv_misc_fish_51.blp', -- Darkmoon Daggermaw
+  ['currency:515'] = 'interface\\icons\\inv_misc_ticket_darkmoon_01.blp', -- Darkmoon Prize Ticket
+  ['currency:1716'] = 'interface\\icons\\ui_horde_honorboundmedal.blp', -- Honorbound Service Medal
+  ['item:153021'] = 'interface\\icons\\inv_misc_eye_02.blp', -- Intact Demon Eye
+  ['item:49927'] = 'interface\\icons\\inv_valentinescard01.blp', -- Love Token
+  ['item:151191'] = 'interface\\icons\\timelesscoin-bloody.blp', -- Old Bottle Cap
+  ['currency:1220'] = 'interface\\icons\\inv_orderhall_orderresources.blp', -- Order Resources
+  ['item:116415'] = 'interface\\icons\\achievement_guildperk_honorablemention.blp', -- Shiny Pet Charm
+  ['item:163036'] = 'interface\\icons\\inv_currency_petbattle.blp', -- Polished Pet Charm
+  ['currency:1721'] = 'interface\\icons\\inv_misc_enchantedpearlf.blp', -- Prismatic Manapearl
+  ['item:165835'] = 'interface\\icons\\inv_misc_enggizmos_35.blp', -- Pristine Gizmo
+  ['item:77951'] = 'interface\\icons\\inv_misc_gem_ebondraenite_01.blp', -- Shadowy Gem
+  ['currency:1149'] = 'interface\\icons\\achievement_reputation_kirintor_offensive.blp', -- Sightless Eye
+  ['currency:777'] = 'interface\\icons\\timelesscoin.blp', -- Timeless Coin
+  ['currency:1166'] = 'interface\\icons\\pvecurrency-justice.blp', -- Timewarped Badge
+  ['currency:391'] = 'interface\\icons\\achievement_zone_tolbarad.blp', -- Tol Barad Commendation
 }
 
 local defaults = { profile = { icon_scale = 1.4, icon_alpha = 0.8 } }
