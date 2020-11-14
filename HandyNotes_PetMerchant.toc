@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90100
 ## Title: HandyNotes: Pet Merchant
 ## Author: Hegwin Xiao Wang
 ## Notes: Show pet merchants on the World Map

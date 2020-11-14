@@ -54,7 +54,7 @@ local ExchangableIcons = {
 }
 
 local defaults = { profile = { icon_scale = 1.4, icon_alpha = 0.8 } }
-local options = {}
+local options = { type = "group", name = "Pet Merchant", args = {} }
 local db
 
 do
